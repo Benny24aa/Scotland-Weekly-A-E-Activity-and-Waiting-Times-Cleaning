@@ -17,5 +17,13 @@ Hospital_List <- Lookup_List %>%
 WeeklyAE <- WeeklyAE %>% 
   rename(GeoCode = TreatmentLocation) 
 
-WeeklyAE <- full_join(WeeklyAE, Hospital_List, by = "GeoCode") %>% 
+WeeklyAE <- left_join(WeeklyAE, Hospital_List, by = "GeoCode") %>% 
   select(-GeoType)
+
+WeeklyAE_Cleaned <- WeeklyAE %>% 
+  select(WeekEndingDate, HBName, GeoName, AttendanceCategory, NumberOfAttendancesEpisode) %>% 
+  rename(Hospital = GeoName) %>% 
+  filter(AttendanceCategory == "All") %>% 
+  select(-AttendanceCategory)
+
+write_xlsx(WeeklyAE_Cleaned, "weekly_ae.xlsx" )
